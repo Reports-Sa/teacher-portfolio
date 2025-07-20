@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ملف الإنجاز المهني</title>
+    
+    <!-- CSS Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    
+    <!-- IMPORTANT: AlpineJS Plugins loaded BEFORE Alpine Core -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Other JS Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    
+    <!-- Custom CSS -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+        body { font-family: 'Tajawal', sans-serif; }
+        [x-cloak] { display: none !important; }
+        .dark { background-color: #111827; color: #f3f4f6; }
+    </style>
+
+    <!-- ========================================================== -->
+    <!-- ▼▼▼ JAVASCRIPT LOGIC using Alpine.data (Correct Way) ▼▼▼ -->
+    <!-- ========================================================== -->
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('portfolioApp', () => ({
+                // State
+                darkMode: Alpine.$persist(false).as('portfolio-dark-mode'),
+                lang: 'ar',
+                isLoading: true,
+                loadingError: null,
+                data: { profile: { fullName: '...' } }, // Initial dummy data
+
+                // Methods
+                init() {
+                    console.log('Alpine component initialized!');
+                    this.fetchData();
+                    AOS.init({ once: true, duration: 600 });
+                },
+
+                fetchData() {
+                    console.log('Fetching data...');
+                    this.isLoading = true;
+                    fetch('./data.json?cache_bust=' + new Date().getTime())
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(jsonData => {
+                            console.log('Data fetched successfully:', jsonData);
+                            this.data = jsonData;
+                            document.title = this.data.profile.fullName;
+                        })
+                        .catch(error => {
+                            console.error("Failed to fetch data:", error);
+                            this.loadingError = error.toString();
+                        })
+                        .finally(() => {
+                            this.isLoading = false;
+                        });
+                },
+
+                toggleDarkMode() {
+                    this.darkMode = !this.darkMode;
+                },
+
+                toggleLang() {
+                    this.lang = this.lang === 'ar' ? 'en' : 'ar';
+                    document.documentElement.dir = this.lang;
+                    document.documentElement.lang = this.lang;
+                }
+            }));
+        });
+    </script>
+</head>
+
+<!-- ======================================================== -->
+<!-- ▼▼▼ BODY tag without () on x-data (Correct Way) ▼▼▼ -->
+<!-- ======================================================== -->
+<body x-data="portfolioApp" x-cloak :class="{ 'dark': darkMode }" :dir="lang">
+    
+    <header>
+        <div class="container mx-auto p-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold" x-text="data.profile.fullName"></h1>
+            <div>
+                <button @click="toggleDarkMode()">Toggle Theme</button>
+                <button @click="toggleLang()">Toggle Lang</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="p-4">
+        <div x-show="isLoading">
+            <p>Loading...</p>
+        </div>
+
+        <div x-show="loadingError">
+            <p class="text-red-500">Error loading data: <span x-text="loadingError"></span></p>
+        </div>
+
+        <div x-show="!isLoading && !loadingError" data-aos="fade-up">
+            <h2 class="text-2xl">Welcome!</h2>
+            <p>The page has loaded correctly.</p>
+        </div>
+    </main>
+
+</body>
+</html>
