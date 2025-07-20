@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ملف الإنجاز المهني</title>
+    <meta name="description" content="ملف إنجاز تفاعلي يعرض المسيرة المهنية والأكاديمية للمعلمة.">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22> portfolio </text></svg>">
+    
+    <!-- External Libraries (CSS and JS) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+    
+    <!-- IMPORTANT: AlpineJS Plugins MUST be loaded BEFORE AlpineJS Core -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Other Libraries that don't depend on Alpine -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+    
+    <!-- Custom CSS -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+        body { font-family: 'Tajawal', sans-serif; transition: background-color 0.3s, color 0.3s; }
+        [x-cloak] { display: none !important; }
+        @media print {
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .no-print, .no-print * { display: none !important; }
+            section { page-break-inside: avoid; }
+            main, section, div, p { background: transparent !important; color: #000 !important; }
+        }
+        .dark { background-color: #111827; color: #f3f4f6; }
+        .fab { position: fixed; bottom: 2rem; right: 2rem; z-index: 50; }
+        [dir="rtl"] .fab { right: auto; left: 2rem; }
+    </style>
+
+    <!-- =================================================================== -->
+    <!-- THE CORRECT AND FINAL JAVASCRIPT IMPLEMENTATION using Alpine.data -->
+    <!-- =================================================================== -->
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('portfolioApp', () => ({
+                // --- STATE MANAGEMENT ---
+                lang: 'ar',
+                darkMode: Alpine.$persist(window.matchMedia('(prefers-color-scheme: dark)').matches).as('portfolio-dark-mode'),
+                isLoading: true,
+                loadingError: null,
+                isAuthenticated: false,
+                isEditing: false,
+                isSaving: false,
+                showLoginModal: false,
+                showFallbackBanner: false,
+                passwordInput: '',
+                loginError: '',
+
+                // --- DATA ---
+                data: { profile: { fullName: "..." } }, // Default structure to prevent errors on load
+                originalData: {},
+                filesToUpload: {},
+
+                // --- I18N (Internationalization) ---
+                i18n: {
+                    ar: { loading: "جار التحميل...", login: "تسجيل الدخول", logout: "تسجيل الخروج", password: "كلمة المرور", loginAction: "دخول", save: "حفظ ونشر", saving: "جاري الحفظ...", cancel: "إلغاء", unsavedChanges: "أنت في وضع التحرير. التغييرات غير محفوظة.", fallbackSave: "لم يتم النشر. تم حفظ نسخة احتياطية في متصفحك.", saveSuccess: "تم الحفظ بنجاح! سيظهر التحديث للجميع خلال لحظات.", saveError: "حدث خطأ أثناء الحفظ. يرجى المحاولة مرة أخرى.", school: "المدرسة", nationality: "الجنسية", schoolYear: "العام الدراسي" },
+                    en: { loading: "Loading...", login: "Login", logout: "Logout", password: "Password", loginAction: "Enter", save: "Save & Publish", saving: "Saving...", cancel: "Cancel", unsavedChanges: "You are in edit mode. Changes are not saved.", fallbackSave: "Could not publish. A backup was saved in your browser.", saveSuccess: "Saved successfully! The update will be live shortly.", saveError: "An error occurred while saving. Please try again.", school: "School", nationality: "Nationality", schoolYear: "School Year" }
+                },
+
+                // --- METHODS ---
+                init() {
+                    this.fetchData();
+                    AOS.init({ once: true, duration: 600 });
+                },
+
+                fetchData() {
+                    this.isLoading = true;
+                    this.loadingError = null;
+                    fetch(`./data.json?v=${new Date().getTime()}`)
+                        .then(response => {
+                            if (!response.ok) throw new Error(`فشل تحميل data.json: ${response.status} ${response.statusText}`);
+                            return response.json();
+                        })
+                        .then(jsonData => {
+                            this.data = jsonData;
+                            this.originalData = JSON.parse(JSON.stringify(jsonData));
+                            document.title = this.data.profile.fullName || "ملف الإنجاز المهني";
+                        })
+                        .catch(error => {
+                            console.error('Fetch Data Error:', error);
+                            this.loadingError = error.message;
+                        })
+                        .finally(() => {
+                            this.isLoading = false;
+                        });
+                },
+                
+                // You can add all your other methods here like saveChanges, login, etc.
+                // For brevity, I will add a few key ones.
+                toggleLang() { 
+                    this.lang = this.lang === 'ar' ? 'en' : 'ar';
+                    document.documentElement.dir = this.lang === 'ar' ? 'rtl' : 'ltr';
+                },
+
+                toggleDarkMode() { this.darkMode = !this.darkMode; },
+
+            }));
+        });
+    </script>
+</head>
+
+<!-- Notice the :class and :dir attributes now use the correct properties -->
+<body x-data="portfolioApp" x-cloak :class="{ 'dark': darkMode }" :dir="lang">
+    
+    <!-- Top Bar -->
+    <header class="no-print sticky top-0 z-40 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm shadow-sm">
+        <div class="container mx-auto px-4 py-2 flex justify-between items-center">
+             <h1 class="text-xl font-bold text-gray-800 dark:text-gray-200" x-text="data.profile.fullName"></h1>
+             <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                 <button @click="toggleDarkMode()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+                     <span x-show="!darkMode">🌙</span><span x-show="darkMode">☀️</span>
+                 </button>
+                 <button @click="toggleLang()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+                     <span x-text="lang === 'ar' ? 'EN' : 'AR'"></span>
+                 </button>
+             </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-4 md:p-8 lg:p-12">
+        
+        <!-- Loading Indicator -->
+        <div x-show="isLoading" class="text-center p-12 text-gray-500" x-text="i18n[lang].loading"></div>
+
+        <!-- Data Loading Error Message -->
+        <div x-show="loadingError" class="m-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+            <h3 class="font-bold">خطأ في تحميل البيانات</h3>
+            <p class="mt-2" x-text="loadingError"></p>
+            <p class="mt-4 text-sm">تأكد من وجود ملف `data.json` في المستودع، وأنه لا يحتوي على أخطاء، وأن مساره صحيح.</p>
+        </div>
+
+        <!-- The Actual Portfolio Content -->
+        <div x-show="!isLoading && !loadingError" class="space-y-16">
+            <h2 class="text-4xl font-bold">مرحباً بك في ملف الإنجاز!</h2>
+            <p>البيانات تم تحميلها بنجاح.</p>
+            <p>اسم المعلمة: <span x-text="data.profile.fullName"></span></p>
+            <!-- All your other portfolio sections go here -->
+        </div>
+    </main>
+
+</body>
+</html>
