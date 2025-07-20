@@ -1,0 +1,58 @@
+{
+  "profile": {
+    "fullName": "أمل عبد الله الغامدي",
+    "email": "amal.teacher@example.com",
+    "title": "معلمة حاسب آلي",
+    "grade": "المرحلة الثانوية",
+    "school": "مدارس الرياض",
+    "administration": "إدارة تعليم الرياض",
+    "nationality": "سعودية",
+    "schoolYear": {
+      "gregorian": "2023-2024",
+      "hijri": "1445"
+    },
+    "photo": "https://i.pravatar.cc/300?u=amal"
+  },
+  "about": {
+    "bio": "معلمة حاسب آلي شغوفة بدمج التقنية في التعليم لخلق بيئة تعلم تفاعلية ومبتكرة. أمتلك خبرة واسعة في تصميم المناهج الرقمية وتطوير مهارات القرن الحادي والعشرين لدى الطالبات، وأسعى دائمًا لتمكينهن ليصبحن مواطنات رقميات فاعلات.",
+    "philosophy": "أؤمن بأن كل طالبة لديها القدرة على الإبداع والتميز. دوري هو توفير الأدوات والبيئة المحفزة التي تطلق العنان لإمكاناتهن، مع التركيز على التعلم القائم على المشاريع وحل المشكلات لإعداد جيل قادر على مواجهة تحديات المستقبل."
+  },
+  "career": [
+    { "id": 1, "year": "2018", "type": "degree", "title": "بكالوريوس علوم الحاسب", "institution": "جامعة الملك سعود" },
+    { "id": 2, "year": "2019", "type": "position", "title": "معلمة حاسب آلي", "institution": "مدارس الرياض" },
+    { "id": 3, "year": "2021", "type": "certification", "title": "شهادة المعلم الخبير من مايكروسوفت (MIEE)", "institution": "Microsoft" },
+    { "id": 4, "year": "2023", "type": "experience", "title": "5 سنوات خبرة في التعليم الثانوي", "institution": "" }
+  ],
+  "professionalDevelopment": [
+    { "id": "pd1", "year": 2023, "type": "ورشة عمل", "title": "استراتيجيات الذكاء الاصطناعي في التعليم", "organizer": "وزارة التعليم" },
+    { "id": "pd2", "year": 2022, "type": "دورة تدريبية", "title": "الأمن السيبراني للجميع", "organizer": "أكاديمية طويق" },
+    { "id": "pd3", "year": 2023, "type": "مؤتمر", "title": "مؤتمر LEAP التقني الدولي", "organizer": "STC" }
+  ],
+  "kpis": [
+    { "id": "kpi1", "label": { "ar": "نسبة نجاح الطالبات", "en": "Student Pass Rate" }, "value": 98, "unit": "%" },
+    { "id": "kpi2", "label": { "ar": "متوسط التحسن", "en": "Avg. Improvement" }, "value": 15, "unit": "%" },
+    { "id": "kpi3", "label": { "ar": "الحضور والالتزام", "en": "Attendance %" }, "value": 99, "unit": "%" },
+    { "id": "kpi4", "label": { "ar": "رقمنة الدروس", "en": "Lesson Digitalisation" }, "value": 100, "unit": "%" },
+    { "id": "kpi5", "label": { "ar": "اجتماعات أولياء الأمور", "en": "Parent Meetings" }, "value": 95, "unit": "%" },
+    { "id": "kpi6", "label": { "ar": "تقييم بيئة الصف", "en": "Classroom Env. Score" }, "value": 4.8, "unit": "/5" }
+  ],
+  "lessons": [
+    { "id": "l1", "title": "مقدمة في البرمجة بلغة بايثون", "coverImage": "uploads/lesson1_cover.jpg", "objectives": "...", "resources": "...", "tech": "...", "file": "uploads/lesson1.pdf" }
+  ],
+  "evidence": [
+    { "id": "e1", "type": "image", "url": "uploads/student_project_1.jpg", "caption": "مشروع طالبات: تصميم واجهة تطبيق" },
+    { "id": "e2", "type": "video", "url": "https://www.youtube.com/watch?v=example", "caption": "فيديو: عرض تقديمي لمشروع روبوت" },
+    { "id": "e3", "type": "pdf", "url": "uploads/student_research.pdf", "caption": "بحث طالبة عن الأمن السيبراني" }
+  ],
+  "awards": [
+    { "id": "aw1", "title": { "ar": "جائزة المعلم المتميز", "en": "Excellent Teacher Award" }, "description": { "ar": "على مستوى إدارة تعليم الرياض", "en": "Riyadh Education Directorate" }, "date": "2023", "frontImage": "uploads/award_medal.jpg", "backContent": "شهادة شكر وتقدير" }
+  ],
+  "performanceStandards": [],
+  "reflection": {
+    "content": "<h3>أهدافي للعام القادم</h3><p>...</p>",
+    "goals": [
+      { "id": "g1", "text": "الحصول على شهادة في تحليل البيانات", "completed": false },
+      { "id": "g2", "text": "تطبيق استراتيجيتين جديدتين للتعلم النشط", "completed": true }
+    ]
+  }
+}
